@@ -132,7 +132,7 @@ export default App;
 ## Changelog
 
 ### v0.0.1
-  * Initial commit
+  * Update README.md and Package.json
 
 ## License
 
