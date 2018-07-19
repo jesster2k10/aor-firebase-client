@@ -62,7 +62,7 @@ const save = async (id, data, previous, resourceName, resourcePath, firebaseSave
     data.id = id
   }
 
-  await firebase.database().ref(`${resourcePath}/${data.key}`).update(firebaseSaveFilter(data))
+  await firebase.firestore().collection(resourcePath).doc(data.key).set(firebaseSaveFilter(data))
   return { data }
 }
 
@@ -72,7 +72,7 @@ const del = async (id, resourceName, resourcePath, uploadFields) => {
       firebase.storage().ref().child(`${resourcePath}/${id}/${fieldName}`).delete())
   }
 
-  await firebase.database().ref(`${resourcePath}/${id}`).remove()
+  await firebase.firestore().collection(resourcePath).doc(id).delete()
   return { data: id }
 }
 

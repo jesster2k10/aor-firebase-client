@@ -1,3 +1,4 @@
+import '@firebase/firestore'
 import firebase from 'firebase'
 import Methods from './methods'
 
@@ -22,11 +23,12 @@ const BaseConfiguration = {
   timestampFieldNames: {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
-  }
+  },
+  persistance: true
 }
 
 export default (firebaseConfig = {}, options = {}) => {
-  options = Object.assign({}, BaseConfiguration, options)
+  options = { ...BaseConfiguration, ...options }
   const { timestampFieldNames, trackedResources, initialQuerytimeout } = options
 
   const resourcesStatus = {}
@@ -37,7 +39,10 @@ export default (firebaseConfig = {}, options = {}) => {
 
   if (firebase.apps.length === 0) {
     firebase.initializeApp(firebaseConfig)
-    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+    firebase.firestore().settings({ timestampsInSnapshots: true })
+    if (options.persistance) {
+      firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+    }
   }
 
   /* Functions */
@@ -73,15 +78,15 @@ export default (firebaseConfig = {}, options = {}) => {
   })
 
   const initializeResource = ({name, isPublic}, resolve) => {
-    let ref = resourcesReferences[name] = firebase.database().ref(resourcesPaths[name])
+    let collection = resourcesReferences[name] = firebase.firestore().collection(resourcesPaths[name])
     resourcesData[name] = []
 
     if (isPublic) {
-      subscribeResource(ref, name, resolve)
+      subscribeResource(collection, name, resolve)
     } else {
       firebase.auth().onAuthStateChanged(auth => {
         if (auth) {
-          subscribeResource(ref, name, resolve)
+          subscribeResource(collection, name, resolve)
         }
       })
     }
@@ -91,8 +96,9 @@ export default (firebaseConfig = {}, options = {}) => {
     return true
   }
 
-  const subscribeResource = (ref, name, resolve) => {
-    ref.once('value', function (childSnapshot) {
+  const subscribeResource = (collection, name, resolve) => {
+    collection.onSnapshot(childSnapshot => {
+
       /** Uses "value" to fetch initial data. Avoid the AOR to show no results */
       if (childSnapshot.key === name) {
         const entries = childSnapshot.val() || {}
@@ -105,20 +111,23 @@ export default (firebaseConfig = {}, options = {}) => {
         })
         resolve()
       }
-    })
-    ref.on('child_added', function (childSnapshot) {
-      resourcesData[name][childSnapshot.key] = firebaseGetFilter(Object.assign({}, {
-        id: childSnapshot.key,
-        key: childSnapshot.key
-      }, childSnapshot.val()), name)
-    })
 
-    ref.on('child_removed', function (oldChildSnapshot) {
-      if (resourcesData[name][oldChildSnapshot.key]) { delete resourcesData[name][oldChildSnapshot.key] }
-    })
-
-    ref.on('child_changed', function (childSnapshot) {
-      resourcesData[name][childSnapshot.key] = childSnapshot.val()
+      childSnapshot.docChanges().forEach(change => {
+          switch (change.type) {
+            case 'added':
+              resourcesData[name][childSnapshot.key] = firebaseGetFilter(Object.assign({}, {
+                id: childSnapshot.key,
+                key: childSnapshot.key
+              }, childSnapshot.val()), name)
+              break
+            case 'modified':
+              resourcesData[name][childSnapshot.key] = childSnapshot.val()
+              break
+            case 'removed':
+              if (resourcesData[name][oldChildSnapshot.key]) { delete resourcesData[name][oldChildSnapshot.key] }
+              break
+          }
+      });
     })
   }
 

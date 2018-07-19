@@ -4,7 +4,7 @@
   "description": "Firestore Client for Admin On Rest",
   "main": "lib/index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --verbose",
     "build": "babel src -d lib",
     "prepare": "yarn run build"
   },
@@ -42,6 +42,7 @@
     "babel-jest": "^20.0.3",
     "babel-loader": "^7.1.4",
     "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.26.0",

@@ -9,8 +9,8 @@ const baseConfig = {
   handleAuthStateChange: async (auth, config) => {
     console.log(`auth`, auth)
     if (auth) {
-      const snapshot = await firebase.database().ref(config.userProfilePath + auth.uid).once('value')
-      const profile = snapshot.val()
+      const document = await firebase.firestore().collection(config.userProfilePath).doc(auth.uid).get()
+      const profile = document.data()
 
       if (profile && profile[config.userAdminProp]) {
         const firebaseToken = auth.getIdToken()
@@ -63,6 +63,8 @@ export default (config = {}) => {
       if (!auth || !alreadySignedIn) {
         auth = await firebase.auth().signInWithEmailAndPassword(username, password)
       }
+
+      console.log(auth)
 
       return config.handleAuthStateChange(auth, config)
     }
