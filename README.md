@@ -1,16 +1,25 @@
-# aor-firebase-client
+# aor-firestore-client
 
-An [admin-on-rest](https://github.com/marmelab/admin-on-rest) client for [Firebase](https://firebase.google.com).
+An [admin-on-rest](https://github.com/marmelab/admin-on-rest) client for [Firebase Firestore](https://firebase.google.com/docs/firestore/).
 
-[![npm version](https://badge.fury.io/js/aor-firebase-client.svg)](https://badge.fury.io/js/aor-firebase-client)
-[![CircleCI](https://circleci.com/gh/sidferreira/aor-firebase-client/tree/master.svg?style=shield)](https://circleci.com/gh/sidferreira/aor-firebase-client/tree/master)
-[![CircleCI](https://circleci.com/gh/sidferreira/aor-firebase-client/tree/develop.svg?style=shield)](https://circleci.com/gh/sidferreira/aor-firebase-client/tree/develop)
+[![npm version](https://badge.fury.io/js/aor-firestore-client.svg)](https://badge.fury.io/js/aor-firestore-client)
+[![CircleCI](https://circleci.com/gh/sidferreira/aor-firestore-client/tree/master.svg?style=shield)](https://circleci.com/gh/sidferreira/aor-firestore-client/tree/master)
+[![CircleCI](https://circleci.com/gh/sidferreira/aor-firestore-client/tree/develop.svg?style=shield)](https://circleci.com/gh/sidferreira/aor-firestore-client/tree/develop)
 
 ## Installation
 
 ```sh
-npm install aor-firebase-client --save
+npm install aor-firestore-client --save
+
+yarn add aor-firestore-client
 ```
+
+## Difference between [aor-firebase-client](https://github.com/sidferreira/aor-firebase-client)
+
+The only difference between these two is that [aor-firebase-client](https://github.com/sidferreira/aor-firebase-client) relies on [Firebase Realtime Database](https://firebase.google.com/docs/database/)
+
+This library uses [Firebase Cloud Firestore](https://firebase.google.com/docs/firestore/)
+The setup is almost identical.
 
 ## Usage
 
@@ -20,14 +29,14 @@ npm install aor-firebase-client --save
 // in src/App.js
 import React from 'react';
 import { Admin, Resource } from 'admin-on-rest';
-import { RestClient } from 'aor-firebase-client';
+import { RestClient } from 'aor-firestore-client';
 
 const firebaseConfig = {
-    apiKey: '<your-api-key>',
-    authDomain: '<your-auth-domain>',
-    databaseURL: '<your-database-url>',
-    storageBucket: '<your-storage-bucket>',
-    messagingSenderId: '<your-sender-id>'
+  apiKey: '<your-api-key>',
+  authDomain: '<your-auth-domain>',
+  databaseURL: '<your-database-url>',
+  storageBucket: '<your-storage-bucket>',
+  messagingSenderId: '<your-sender-id>'
 };
 
 const clientOptions = {
@@ -44,10 +53,10 @@ const clientOptions = {
 }
 
 const App = () => (
-    <Admin restClient={RestClient(trackedResources, clientOptions)} >
-        <Resource name="posts" list={PostList} />
-        <Resource name="contacts" list={ContactList} />
-    </Admin>
+  <Admin restClient={RestClient(trackedResources, clientOptions)} >
+    <Resource name="posts" list={PostList} />
+    <Resource name="contacts" list={ContactList} />
+  </Admin>
 );
 
 export default App;
@@ -122,32 +131,8 @@ export default App;
 
 ## Changelog
 
-### v0.0.10
-  * Documentation fix for authClient  [#17](https://github.com/sidferreira/aor-firebase-client/pull/17)
-  * Handle empty collections  [#18](https://github.com/sidferreira/aor-firebase-client/pull/18)
-  * Build lib on prepare [#19](https://github.com/sidferreira/aor-firebase-client/pull/19)
-  * Thanks to [@grahamlyus](https://github.com/grahamlyus) who worked a LOT this month to make this release possible! Kudos!
-
-### v0.0.9
-  * Fixes
-
-### v0.0.8
-  * Fix it saving on the wrong path [#7](https://github.com/sidferreira/aor-firebase-client/issues/7)
-  * Fix README links
-### v0.0.7
-  * Typos, tests and fixes [#6](https://github.com/sidferreira/aor-firebase-client/pull/6)
-### v0.0.6
-  * README Fixes [#4](https://github.com/sidferreira/aor-firebase-client/pull/4)
-### v0.0.4
-  * CI configured
-
-### v0.0.3
-  * Fixed Auth Client configuration [#2](https://github.com/sidferreira/aor-firebase-client/issues/2)
-  * Added timestamps [#3](https://github.com/sidferreira/aor-firebase-client/pull/3)
-  * Initial unit testing / CI
-
 ### v0.0.1
-  * Initial commit, lots of to dos
+  * Initial commit
 
 ## License
 

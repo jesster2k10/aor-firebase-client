@@ -1,7 +1,7 @@
 {
-  "name": "aor-firebase-client",
-  "version": "0.3.1",
-  "description": "Firebase Client for Admin On Rest",
+  "name": "aor-firestore-client",
+  "version": "0.0.1",
+  "description": "Firestore Client for Admin On Rest",
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",
@@ -11,9 +11,9 @@
   "author": "Sid Ferreira",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sidferreira/aor-firebase-client.git"
+    "url": "https://github.com/jesster2k10/aor-firestore-client"
   },
-  "license": "ISC",
+  "license": "MIT",
   "files": [
     "LICENSE",
     "*.md",
@@ -24,6 +24,8 @@
     "admin-on-rest",
     "react",
     "firebase",
+    "firestore",
+    "cloud-firestore",
     "rest"
   ],
   "dependencies": {
