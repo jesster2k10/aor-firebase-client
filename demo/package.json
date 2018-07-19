@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "admin-on-rest": "^1.2.1",
+    "aor-firestore-client": "^0.0.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1"
   },

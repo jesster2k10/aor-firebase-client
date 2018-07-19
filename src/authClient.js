@@ -7,7 +7,6 @@ const baseConfig = {
   userAdminProp: 'isAdmin',
   localStorageTokenName: 'aorFirebaseClientToken',
   handleAuthStateChange: async (auth, config) => {
-    console.log(`auth`, auth)
     if (auth) {
       const document = await firebase.firestore().collection(config.userProfilePath).doc(auth.uid).get()
       const profile = document.data()
@@ -63,8 +62,6 @@ export default (config = {}) => {
       if (!auth || !alreadySignedIn) {
         auth = await firebase.auth().signInWithEmailAndPassword(username, password)
       }
-
-      console.log(auth)
 
       return config.handleAuthStateChange(auth, config)
     }

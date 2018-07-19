@@ -55,14 +55,7 @@ const save = async (id, data, previous, resourceName, resourcePath, firebaseSave
 
   data = Object.assign(previous, { [timestampFieldNames.updatedAt]: Date.now() }, data)
 
-  if (!data.key) {
-    data.key = id
-  }
-  if (!data.id) {
-    data.id = id
-  }
-
-  await firebase.firestore().collection(resourcePath).doc(data.key).set(firebaseSaveFilter(data))
+  await firebase.firestore().collection(resourcePath).doc(id).set(firebaseSaveFilter(data))
   return { data }
 }
 
@@ -79,7 +72,7 @@ const del = async (id, resourceName, resourcePath, uploadFields) => {
 const getItemID = (params, type, resourceName, resourcePath, resourceData) => {
   let itemId = params.data.id || params.id || params.data.key || params.key
   if (!itemId) {
-    itemId = firebase.database().ref().child(resourcePath).push().key
+    itemId = firebase.firestore().collection(resourcePath).id
   }
 
   if (!itemId) {
@@ -93,9 +86,14 @@ const getItemID = (params, type, resourceName, resourcePath, resourceData) => {
   return itemId
 }
 
-const getOne = (params, resourceName, resourceData) => {
-  if (params.id && resourceData[params.id]) {
-    return { data: resourceData[params.id] }
+const getOne = async (params, resourceName, resourceData) => {
+  if (params.id) {
+    if (resourceData[params.id]) {
+      return { data: resourceData[params.id] }
+    } else {
+      const data = await firebase.firestore().collection(resourceName).doc(params.id).get()
+      return { data: data.data() }
+    }
   } else {
     throw new Error('Key not found')
   }

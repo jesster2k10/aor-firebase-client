@@ -1,6 +1,6 @@
 {
   "name": "aor-firestore-client",
-  "version": "0.0.1",
+  "version": "0.1",
   "description": "Firestore Client for Admin On Rest",
   "main": "lib/index.js",
   "scripts": {

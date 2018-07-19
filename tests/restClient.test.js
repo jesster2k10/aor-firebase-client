@@ -1,4 +1,4 @@
-/* globals jest, test, expect, jasmine, debugger */
+/* globals jest, test, expect, jasmine, debugger, describe */
 import {
   GET_LIST,
   GET_ONE,
@@ -8,12 +8,12 @@ import firebase from 'firebase'
 
 import { RestClient } from '../src'
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000
 
 debugger;
 
 process.on('unhandledRejection', (reason) => {
-  console.log('Reason: ' + reason);
+  console.log('Reason: ' + reason)
 })
 
 const firebaseConfig = {
@@ -79,27 +79,27 @@ describe('RestClient trackedResources', () => {
       trackedResources: [{name: 'posts'}],
       persistance: false
     })
-    const data = await client(GET_ONE, 'posts', { id: 1 })
+    const data = await client(GET_ONE, 'posts', { id: '9R4MhlWOkmCjq5ImqE3e' })
     expect(data).toBeDefined()
     expect(data.data).toBeDefined()
     expect(data.data.id).toBe('1')
   })
-  test.only('accepts objects with a name and path', async () => {
-    const client = RestClient(firebaseConfig, {
-      trackedResources: [{name: 'posts', path: '/posts'}],
-      persistance: false
-    })
-    const data = await client(GET_ONE, 'posts', { id: 1 })
-    expect(data).toBeDefined()
-    expect(data.data).toBeDefined()
-    expect(data.data.id).toBe('1')
-  })
-  test('rejects paths that do not end with the name', () => {
-    expect(() => {
-      RestClient(firebaseConfig, {
-        trackedResources: [{name: 'posts', path: 'path/to/not_posts'}],
-        persistance: false
-      })
-    }).toThrow()
-  })
+  // test.only('accepts objects with a name and path', async () => {
+  //   const client = RestClient(firebaseConfig, {
+  //     trackedResources: [{name: 'posts', path: '/posts'}],
+  //     persistance: false
+  //   })
+  //   const data = await client(GET_ONE, 'posts', { id: 1 })
+  //   expect(data).toBeDefined()
+  //   expect(data.data).toBeDefined()
+  //   expect(data.data.id).toBe('1')
+  // })
+  // test('rejects paths that do not end with the name', () => {
+  //   expect(() => {
+  //     RestClient(firebaseConfig, {
+  //       trackedResources: [{name: 'posts', path: 'path/to/not_posts'}],
+  //       persistance: false
+  //     })
+  //   }).toThrow()
+  // })
 })

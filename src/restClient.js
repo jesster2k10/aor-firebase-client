@@ -13,8 +13,7 @@ import {
 } from './reference'
 
 /**
- * @param {string[]|Object[]} trackedResources Array of resource names or array of Objects containing name and
- * optional path properties (path defaults to name)
+ * @param {Object[]} options Rest Client configuration options
  * @param {Object} firebaseConfig Options Firebase configuration
  */
 
@@ -44,7 +43,7 @@ export default (firebaseConfig = {}, options = {}) => {
       firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
     }
   }
-
+  
   /* Functions */
   const upload = options.upload || Methods.upload
   const save = options.save || Methods.save
@@ -98,10 +97,9 @@ export default (firebaseConfig = {}, options = {}) => {
 
   const subscribeResource = (collection, name, resolve) => {
     collection.onSnapshot(childSnapshot => {
-
-      /** Uses "value" to fetch initial data. Avoid the AOR to show no results */
-      if (childSnapshot.key === name) {
-        const entries = childSnapshot.val() || {}
+      if (childSnapshot.id === name) {
+        const entries = childSnapshot.data() || {}
+        console.log(entries)
         Object.keys(entries).map(key => {
           resourcesData[name][key] = firebaseGetFilter(entries[key], name)
         })
@@ -113,21 +111,21 @@ export default (firebaseConfig = {}, options = {}) => {
       }
 
       childSnapshot.docChanges().forEach(change => {
-          switch (change.type) {
-            case 'added':
-              resourcesData[name][childSnapshot.key] = firebaseGetFilter(Object.assign({}, {
-                id: childSnapshot.key,
-                key: childSnapshot.key
-              }, childSnapshot.val()), name)
-              break
-            case 'modified':
-              resourcesData[name][childSnapshot.key] = childSnapshot.val()
-              break
-            case 'removed':
-              if (resourcesData[name][oldChildSnapshot.key]) { delete resourcesData[name][oldChildSnapshot.key] }
-              break
-          }
-      });
+        switch (change.type) {
+          case 'added':
+            resourcesData[name][childSnapshot.id] = firebaseGetFilter(Object.assign({}, {
+              id: childSnapshot.id,
+              key: childSnapshot.id
+            }, childSnapshot.data()), name)
+            break
+          case 'modified':
+            resourcesData[name][childSnapshot.id] = childSnapshot.data()
+            break
+          case 'removed':
+            if (resourcesData[name][childSnapshot.id]) { delete resourcesData[name][childSnapshot.id] }
+            break
+        }
+      })
     })
   }
 
